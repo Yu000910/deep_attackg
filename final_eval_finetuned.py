@@ -14,7 +14,7 @@ MODEL_PATH = "./cti_model_20k_finetuned"
 TECHNIQUE_DIR = "/Users/nnn/Desktop/temp/博士毕业/第五篇/cti-master/enterprise-attack/attack-pattern/"
 REPORTS_DIR = "generated_reports"
 
-LLM_API_KEY = "sk-d8dea0e1a15c4241a9a50007e4e84e41" 
+LLM_API_KEY = "" 
 LLM_BASE_URL = "https://api.deepseek.com"
 client = OpenAI(api_key=LLM_API_KEY, base_url=LLM_BASE_URL)
 

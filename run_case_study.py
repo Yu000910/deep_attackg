@@ -26,7 +26,7 @@ TARGET_REPORTS = [
 ]
 
 # 4. LLM
-LLM_API_KEY = "sk-d8dea0e1a15c4241a9a50007e4e84e41" 
+LLM_API_KEY = "" 
 LLM_BASE_URL = "https://api.deepseek.com"
 client = OpenAI(api_key=LLM_API_KEY, base_url=LLM_BASE_URL)
 
