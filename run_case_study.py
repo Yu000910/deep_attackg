@@ -13,11 +13,11 @@ import numpy as np
 # 1. 基础路径 (使用绝对路径以防出错)
 BASE_DIR = "."
 BI_ENCODER_PATH = "./cti_model_20k_finetuned"  # 请确保运行目录下有此文件夹
-CROSS_ENCODER_PATH = "new_experiment_4/cti_reranker_final"
+CROSS_ENCODER_PATH = "./cti_reranker_final"
 
 # 2. 知识库与报告
 TECHNIQUE_DIR = "./attack-pattern"
-REPORTS_DIR = "generated_reports" # 请确保这是相对于运行目录的正确路径
+REPORTS_DIR = "./CTI_reports"
 
 # 3. 目标报告 (只测这两个)
 TARGET_REPORTS = [
