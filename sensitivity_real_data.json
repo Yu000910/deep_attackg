@@ -1,0 +1,132 @@
+{
+  "k1_sweep": [
+    {
+      "k1": 10,
+      "mean_recall": 85.01,
+      "std_recall": 12.69,
+      "mean_latency_ms": 392.17,
+      "std_latency_ms": 155.14
+    },
+    {
+      "k1": 20,
+      "mean_recall": 91.82,
+      "std_recall": 9.87,
+      "mean_latency_ms": 370.35,
+      "std_latency_ms": 134.64
+    },
+    {
+      "k1": 30,
+      "mean_recall": 95.46,
+      "std_recall": 7.69,
+      "mean_latency_ms": 370.39,
+      "std_latency_ms": 130.0
+    },
+    {
+      "k1": 40,
+      "mean_recall": 97.16,
+      "std_recall": 5.56,
+      "mean_latency_ms": 365.9,
+      "std_latency_ms": 133.31
+    },
+    {
+      "k1": 50,
+      "mean_recall": 98.06,
+      "std_recall": 4.46,
+      "mean_latency_ms": 365.72,
+      "std_latency_ms": 131.19
+    },
+    {
+      "k1": 60,
+      "mean_recall": 98.43,
+      "std_recall": 4.18,
+      "mean_latency_ms": 368.09,
+      "std_latency_ms": 136.56
+    },
+    {
+      "k1": 80,
+      "mean_recall": 99.06,
+      "std_recall": 3.2,
+      "mean_latency_ms": 366.27,
+      "std_latency_ms": 128.78
+    },
+    {
+      "k1": 100,
+      "mean_recall": 99.36,
+      "std_recall": 2.63,
+      "mean_latency_ms": 359.84,
+      "std_latency_ms": 124.23
+    }
+  ],
+  "k2_sweep": [
+    {
+      "k2": 3,
+      "precision": 48.68,
+      "avg_tokens_per_report": 2707.0,
+      "tp": 184,
+      "fp": 194
+    },
+    {
+      "k2": 5,
+      "precision": 47.07,
+      "avg_tokens_per_report": 3102.0,
+      "tp": 225,
+      "fp": 253
+    },
+    {
+      "k2": 8,
+      "precision": 44.46,
+      "avg_tokens_per_report": 3692.0,
+      "tp": 269,
+      "fp": 336
+    },
+    {
+      "k2": 10,
+      "precision": 42.95,
+      "avg_tokens_per_report": 4089.0,
+      "tp": 274,
+      "fp": 364
+    },
+    {
+      "k2": 12,
+      "precision": 42.36,
+      "avg_tokens_per_report": 4484.0,
+      "tp": 280,
+      "fp": 381
+    },
+    {
+      "k2": 15,
+      "precision": 44.89,
+      "avg_tokens_per_report": 5079.0,
+      "tp": 281,
+      "fp": 345
+    },
+    {
+      "k2": 20,
+      "precision": 40.17,
+      "avg_tokens_per_report": 6076.0,
+      "tp": 282,
+      "fp": 420
+    }
+  ],
+  "k1_values": [
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    80,
+    100
+  ],
+  "k2_values": [
+    3,
+    5,
+    8,
+    10,
+    12,
+    15,
+    20
+  ],
+  "k1_test_size": 201,
+  "k2_subset_size": 30
+}

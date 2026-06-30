@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer, InputExample, losses
 from sentence_transformers.evaluation import EmbeddingSimilarityEvaluator
 
 # ================= 配置区域 =================
-DATASET_PATH = "/Users/nnn/Desktop/temp/博士毕业/第五篇/verb-tool-project/datasets/D_BEDR.npz"
+DATASET_PATH = "./D_BEDR.npz"
 MODEL_NAME = "BAAI/bge-base-en-v1.5"
 OUTPUT_PATH = "cti_model_20k_finetuned"
 

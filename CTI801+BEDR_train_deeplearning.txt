@@ -1,0 +1,40 @@
+训练代码是deep-learning-test.py
+训练结果是：
+(deep_attackg) nnn@bogon deep_attackg % /opt/anaconda3/envs/deep_attackg/bin/python /Users/nnn/Desktop/temp/博士毕业/小论文/7_deep_attack/deep_attackg/deep-learnin
+g-test.py
+🚀 使用计算设备: mps
+📂 正在加载数据...
+   - 成功加载 1002 篇 CTI 报告
+   - 成功加载 21453 条 BEDR 记录
+🎯 统一标签空间: 共 679 种独特的 ATT&CK 技术
+📊 训练集大小: 22254 (CTI 80% + BEDR 100%)
+📊 测试集大小: 201 (仅 CTI 20%)
+
+🔥 开始训练...
+Epoch [1/15] | 训练损失 (Loss): 0.0216
+Epoch [2/15] | 训练损失 (Loss): 0.0130
+Epoch [3/15] | 训练损失 (Loss): 0.0124
+Epoch [4/15] | 训练损失 (Loss): 0.0114
+Epoch [5/15] | 训练损失 (Loss): 0.0102
+Epoch [6/15] | 训练损失 (Loss): 0.0095
+Epoch [7/15] | 训练损失 (Loss): 0.0085
+Epoch [8/15] | 训练损失 (Loss): 0.0077
+Epoch [9/15] | 训练损失 (Loss): 0.0071
+Epoch [10/15] | 训练损失 (Loss): 0.0065
+Epoch [11/15] | 训练损失 (Loss): 0.0061
+Epoch [12/15] | 训练损失 (Loss): 0.0056
+Epoch [13/15] | 训练损失 (Loss): 0.0053
+Epoch [14/15] | 训练损失 (Loss): 0.0049
+Epoch [15/15] | 训练损失 (Loss): 0.0046
+
+🔍 开始在 20% CTI 报告上进行 Zero/Few-shot 测试评估...
+
+========================================
+🏆 CTI-1002 测试集最终评估结果 (Data-Symmetric Baseline)
+========================================
+🎯 Micro-Precision: 0.5077  (50.77%)
+🎯 Micro-Recall   : 0.0163  (1.63%)
+🔥 Micro-F1 Score : 0.0316  (3.16%)
+========================================
+
+就是加了BEDR，结果仍然非常不理想，这就是深度学习的限制。

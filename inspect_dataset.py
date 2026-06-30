@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # 你的数据集路径
-FILE_PATH = "/Users/nnn/Desktop/temp/博士毕业/第五篇/verb-tool-project/datasets/D_BEDR.npz"
+FILE_PATH = "./D_BEDR.npz"
 
 def inspect_npz(path):
     print(f">>> 📂 Loading Dataset from: {path}...")

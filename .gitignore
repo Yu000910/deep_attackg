@@ -1,0 +1,17 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Large model files (download from HuggingFace)
+cti_model_20k_finetuned/
+
+# External data (download separately)
+attack-pattern/
+TRAM/
+D_BEDR.npz
+checkpoints/
+
+# Sensitive config
+.env

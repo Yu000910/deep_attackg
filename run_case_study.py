@@ -11,12 +11,12 @@ import numpy as np
 
 # ================= 🔧 专用配置 =================
 # 1. 基础路径 (使用绝对路径以防出错)
-BASE_DIR = "/Users/nnn/Desktop/temp/博士毕业/第六篇/elsarticle/experiment"
+BASE_DIR = "."
 BI_ENCODER_PATH = "./cti_model_20k_finetuned"  # 请确保运行目录下有此文件夹
 CROSS_ENCODER_PATH = "new_experiment_4/cti_reranker_final"
 
 # 2. 知识库与报告
-TECHNIQUE_DIR = "/Users/nnn/Desktop/temp/博士毕业/第五篇/cti-master/enterprise-attack/attack-pattern/"
+TECHNIQUE_DIR = "./attack-pattern"
 REPORTS_DIR = "generated_reports" # 请确保这是相对于运行目录的正确路径
 
 # 3. 目标报告 (只测这两个)

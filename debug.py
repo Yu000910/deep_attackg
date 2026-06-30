@@ -12,12 +12,12 @@ import numpy as np
 # ================= 配置 =================
 BI_ENCODER_PATH = "./cti_model_20k_finetuned"
 # 请确认这个路径是正确的，不要用相对路径，容易错
-CROSS_ENCODER_PATH = "/Users/nnn/Desktop/cti_reranker_final" 
+CROSS_ENCODER_PATH = "./cti_reranker_final" 
 if not os.path.exists(CROSS_ENCODER_PATH):
     # 容错：如果找不到，尝试项目内路径
     CROSS_ENCODER_PATH = "new_experiment_4/cti_reranker_final"
 
-TECHNIQUE_DIR = "/Users/nnn/Desktop/temp/博士毕业/第五篇/cti-master/enterprise-attack/attack-pattern/"
+TECHNIQUE_DIR = "./attack-pattern"
 REPORTS_DIR = "generated_reports"
 
 LLM_API_KEY = "" 

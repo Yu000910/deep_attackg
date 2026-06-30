@@ -14,7 +14,7 @@ user_home = os.path.expanduser("~")
 OUTPUT_PATH = os.path.join(user_home, "Desktop", "cti_reranker_final")
 
 # 2. 数据集路径 (保持你的原始路径)
-DATASET_PATH = "/Users/nnn/Desktop/temp/博士毕业/第五篇/verb-tool-project/datasets/D_BEDR.npz"
+DATASET_PATH = "./D_BEDR.npz"
 
 MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2" 
 BATCH_SIZE = 16

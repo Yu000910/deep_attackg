@@ -1,0 +1,26 @@
+# Deep-AttacKG 依赖环境
+
+# 核心深度学习
+torch==2.9.1
+torchvision==0.24.1
+torchaudio==2.9.1
+transformers==4.57.3
+sentence-transformers==5.2.0
+
+# LLM API
+openai==2.14.0
+
+# 检索
+rank-bm25==0.2.2
+
+# 数据处理
+numpy==2.2.6
+pandas==2.3.3
+scikit-learn==1.7.2
+
+# 进度显示与可视化
+tqdm==4.67.1
+matplotlib==3.10.8
+
+# 文档生成 (仅用于生成回复信)
+python-docx==1.2.0

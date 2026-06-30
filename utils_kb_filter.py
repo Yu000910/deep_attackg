@@ -4,9 +4,9 @@ import json
 import glob
 
 # 数据集路径
-DATASET_PATH = "/Users/nnn/Desktop/temp/博士毕业/第五篇/verb-tool-project/datasets/D_BEDR.npz"
+DATASET_PATH = "./D_BEDR.npz"
 # MITRE JSON 路径
-TECHNIQUE_DIR = "/Users/nnn/Desktop/temp/博士毕业/第五篇/cti-master/enterprise-attack/attack-pattern/"
+TECHNIQUE_DIR = "./attack-pattern"
 
 def load_filtered_kb():
     print(">>> 🧹 Filtering Knowledge Base to match Dataset Scope...")
