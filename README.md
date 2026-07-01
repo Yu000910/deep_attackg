@@ -6,7 +6,7 @@ ASOC-D-26-00148R1 | Applied Soft Computing
 
 ---
 
-## 环境配置
+## Environment Setup
 
 ```bash
 conda create -n deep_attackg python=3.10
@@ -14,143 +14,161 @@ conda activate deep_attackg
 pip install -r requirements.txt
 ```
 
-## 文件结构
+## File Structure
 
 ```
-├── requirements.txt                          # Python依赖
-├── README.md                                 # 本文件
+├── requirements.txt                          # Python dependencies
+├── README.md                                 # This file
 │
-├── cti_model_20k_finetuned/   (symlink)      # Bi-Encoder权重 (~437MB)
-├── cti_reranker_final/        (symlink)      # Cross-Encoder权重 (~90MB)
-├── CTI_reports/               (symlink)      # CTI-1002数据集 (1,002 reports)
-├── TRAM/                      (symlink)      # MITRE TRAM数据集
-├── attack-pattern/            (symlink)      # MITRE ATT&CK知识库
-├── BEDR_resampled_dataset.csv                # BEDR重采样数据集
-├── D_BEDR.npz                 (symlink)      # BEDR原始NPZ文件
-├── test_split.json                           # CTI-1002评估分割
+├── cti_model_20k_finetuned/   (symlink)      # Bi-Encoder weights (~437MB)
+├── cti_reranker_final/        (symlink)      # Cross-Encoder weights (~90MB)
+├── CTI_reports/               (symlink)      # CTI-1002 dataset (1,002 reports)
+├── TRAM/                      (symlink)      # MITRE TRAM dataset
+├── attack-pattern/            (symlink)      # MITRE ATT&CK knowledge base (v15)
+├── BEDR_resampled_dataset.csv                # BEDR resampled dataset
+├── D_BEDR.npz                 (symlink)      # BEDR vectorized training data
+├── test_split.json                           # CTI-1002 evaluation split
 │
-├── run_main_evaluation.py                    # ★ 主评估 (Table 3, Table 4)
-├── run_tram_hierarchy_eval.py                # ★ TRAM双指标评估 (Table 6)
-├── latency_profiling.py                      # ★ 延迟剖析 (Figure 5b)
-├── learning_curve_analysis.py                # ★ 学习曲线 (Figure 4)
-├── plot_sensitivity.py                       # ★ 参数敏感性 (Figure 6)
-├── run_case_study.py                         # ★ 案例研究 (Figure 7)
+├── run_main_evaluation.py                    # Main evaluation (Table 3, Table 4)
+├── run_tram_hierarchy_eval.py                # TRAM dual-metric evaluation (Table 6)
+├── latency_profiling.py                      # Latency profiling (Figure 5b)
+├── learning_curve_analysis.py                # Learning curve (Figure 4)
+├── plot_sensitivity.py                       # Parameter sensitivity (Figure 6)
+├── run_case_study.py                         # Case study (Figure 7)
 │
-├── train_with_dataset.py                     # Bi-Encoder训练
-├── train_cross_encoder.py                    # Cross-Encoder训练
-├── deep-learning-test.py                     # ACRNN Baseline
-├── deep_learning_train_with_logging.py        # ACRNN Baseline (带逐epoch日志)
+├── train_with_dataset.py                     # Bi-Encoder training (InfoNCE)
+├── train_cross_encoder.py                    # Cross-Encoder training
+├── deep-learning-test.py                     # ACRNN baseline evaluation
+├── deep_learning_train_with_logging.py       # ACRNN baseline training (per-epoch logging)
 │
-├── run_sensitivity_sweep.py                  # 敏感性参数扫描
-├── fig_case.py                               # 案例研究辅助
-├── utils_kb_filter.py                        # 知识库过滤工具
-├── inspect_dataset.py                        # 数据集检查工具
-└── debug.py                                  # 调试脚本
+├── run_sensitivity_sweep.py                  # Sensitivity parameter sweep
+├── fig_case.py                               # Case study visualization helper
+├── utils_kb_filter.py                        # Knowledge base filter utility
+├── inspect_dataset.py                        # Dataset statistics (Figure 1)
+└── debug.py                                  # Debugging script
 ```
 
-## 模型权重
+## Model Weights
 
-Bi-Encoder和Cross-Encoder权重上传至HuggingFace Model Hub：
+Trained Bi-Encoder and Cross-Encoder checkpoints are hosted on HuggingFace Model Hub:
 
-- **Bi-Encoder:** `https://huggingface.co/Yu000910/deep-attackg-bi-encoder`
-- **Cross-Encoder:** `https://huggingface.co/Yu000910/deep-attackg-cross-encoder`
+- **Bi-Encoder:** `https://huggingface.co/Andou2yu/deep-attackg-bi-encoder`
+- **Cross-Encoder:** `https://huggingface.co/Andou2yu/deep-attackg-cross-encoder`
 
-下载后放置于项目根目录即可（或创建软链接）。
+Download via HuggingFace CLI or place manually in the project root:
 
-## 复现实验
+```bash
+huggingface-cli download Andou2yu/deep-attackg-bi-encoder --local-dir ./cti_model_20k_finetuned
+huggingface-cli download Andou2yu/deep-attackg-cross-encoder --local-dir ./cti_reranker_final
+```
 
-### API配置
+## Reproducing Experiments
 
-Stage 3使用DeepSeek API进行LLM推理。需要在脚本中配置：
+### API Configuration
+
+Stage 3 (LLM Logic-Constrained Verification) requires a DeepSeek API key. Edit the relevant scripts to set:
 
 ```python
 LLM_API_KEY = "your-deepseek-api-key"
 LLM_BASE_URL = "https://api.deepseek.com"
 ```
 
-API模型: `deepseek-chat`, temperature=0.0, response_format=json_object.
-生成日期: 2025年12月–2026年4月.
+See [API Reproducibility Notes](#api-reproducibility-notes) below for full details.
 
-### Table 3 & Table 4 (主实验结果 & 消融实验)
+### Table & Figure Mapping
+
+| Paper Element | Script | Description |
+|---------------|--------|-------------|
+| Table 3 (Main Results) | `run_main_evaluation.py` | M1/M2/M3 Precision, Recall, F1, TP, FP, FN |
+| Table 4 (Ablation Study) | `run_main_evaluation.py` | Ablation variants |
+| Table 5 (BEDR Augmentation) | `run_main_evaluation.py` | ACRCNN$_{aug}$ comparison |
+| Table 6 (TRAM External Validation) | `run_tram_hierarchy_eval.py` | Strict and Hierarchy-Aware dual metrics |
+| Figure 1 (Dataset Statistics) | `inspect_dataset.py` | Class distribution statistics from BEDR CSV |
+| Figure 4 (Learning Curve) | `deep_learning_train_with_logging.py` → `learning_curve_analysis.py` | ACRCNN per-epoch training log + curve plot |
+| Figure 5b (Latency Breakdown) | `latency_profiling.py` | Per-stage latency with mean ± std |
+| Figure 6 (Parameter Sensitivity) | `run_sensitivity_sweep.py` → `plot_sensitivity.py` | K1/K2 sweep + sensitivity curves |
+| Figure 7 (Case Study) | `run_case_study.py` → `fig_case.py` | Qualitative error analysis on Reports 352 and 509 |
+
+### Commands
 
 ```bash
+# Table 3 & Table 4 (Main Results & Ablation)
 python run_main_evaluation.py
-```
+# Set QUICK_TEST=True for a fast 5-report sanity check
 
-- 运行时间: ~1-2小时 (201条测试报告)
-- 输出: M1/M2/M3各阶段的Micro-Precision, Recall, F1, TP, FP, FN
-- QUICK_TEST=True可快速测试(5条报告)
-
-### Table 6 (TRAM外部验证)
-
-```bash
+# Table 6 (TRAM External Validation)
 python run_tram_hierarchy_eval.py
-```
 
-- 运行时间: ~2.5小时 (50条TRAM报告)
-- 输出: Strict Exact-Match 和 Hierarchy-Aware 双指标对比
+# Figure 4 (Learning Curve)
+python deep_learning_train_with_logging.py   # Step 1: train + log
+python learning_curve_analysis.py            # Step 2: plot
 
-### Figure 4 (学习曲线)
-
-```bash
-# Step 1: 训练ACRNN Baseline并记录逐epoch日志
-python deep_learning_train_with_logging.py
-
-# Step 2: 绘制学习曲线
-python learning_curve_analysis.py
-```
-
-### Figure 5b (延迟剖析)
-
-```bash
+# Figure 5b (Latency Breakdown)
 python latency_profiling.py
-```
 
-### Figure 6 (参数敏感性)
+# Figure 6 (Parameter Sensitivity)
+python run_sensitivity_sweep.py              # Step 1: sweep K1, K2
+python plot_sensitivity.py                   # Step 2: plot
 
-```bash
-# Step 1: 运行参数扫描 (K1 sweep无需LLM, K2 sweep需要LLM)
-python run_sensitivity_sweep.py
-
-# Step 2: 绘制敏感性曲线
-python plot_sensitivity.py
-```
-
-### Figure 7 (案例研究)
-
-```bash
+# Figure 7 (Case Study)
 python run_case_study.py
 ```
 
-## 实验结果
+### Training Scripts
 
-### 主实验 (CTI-1002, N=201)
+```bash
+# Bi-Encoder (InfoNCE contrastive loss, BEDR dataset)
+python train_with_dataset.py
 
-| Stage | Precision | Recall | Micro-F1 |
-|-------|-----------|--------|----------|
-| M1: Hybrid Retrieval | 5.06% | 98.98% | 9.63% |
-| M2: + Cross-Encoder | 15.50% | 86.47% | 26.28% |
-| M3: + LLM Reasoning | 45.78% | 77.41% | 57.53% |
-
-### TRAM外部验证 (N=50)
-
-| Metric | Strict | Hierarchy-Aware |
-|--------|--------|-----------------|
-| Precision | 13.12% | 24.83% |
-| Recall | 59.25% | 75.37% |
-| Micro-F1 | 21.48% | 37.35% |
-
-## 数据来源
-
-- **CTI-1002:** 1,002份CTI报告及ATT&CK标注
-- **BEDR:** Boundary Entropy-Driven Resampling数据集 (21,453条, 679类)
-- **TRAM:** MITRE TRAM公开基准 (multi_label.json)
-- **ATT&CK KB:** MITRE ATT&CK v15 Enterprise (attack-pattern/*.json)
-
-## 引用
-
-If you use this code or data, please cite:
+# Cross-Encoder (pairwise relevance, BEDR dataset)
+python train_cross_encoder.py
 ```
+
+### Baseline Scripts
+
+```bash
+# ACRCNN supervised baseline (training + evaluation)
+python deep_learning_train_with_logging.py
+python deep-learning-test.py
+```
+
+## API Reproducibility Notes
+
+### LLM (Stage 3 — Deep-AttacKG; All stages — BEDR)
+
+| Parameter | Value |
+|-----------|-------|
+| Provider | DeepSeek |
+| Model | `deepseek-chat` (DeepSeek-V3) |
+| Base URL | `https://api.deepseek.com` |
+| Temperature | 0.0 (deterministic decoding) |
+| Response Format | `json_object` |
+| Generation Period | December 2025 – April 2026 |
+
+### Embedding (BEDR Pipeline)
+
+| Parameter | Value |
+|-----------|-------|
+| Provider | Aliyun DashScope |
+| Model | `text-embedding-v4` |
+| Base URL | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| Dimensions | 768 |
+| Generation Period | December 2025 – April 2026 |
+
+### Random Seeds
+
+All scripts use fixed random seeds (`random_state=42`, `seed=42`) for reproducible data splits and training initialization.
+
+### On API-Based Reproducibility
+
+Stages 1–2 (Bi-Encoder + Cross-Encoder) use locally deployed fixed-weight models and are fully deterministic. Stage 3 depends on the DeepSeek API, whose underlying model weights may be updated by the provider over time. The BEDR pipeline uses both DeepSeek (LLM) and DashScope (embedding) APIs. The methodology — including all prompts, decoding parameters, random seeds, pinned package versions, and intermediate outputs — is fully documented, ensuring that the pipeline is verifiable and the datasets are fully available. Intermediate augmentation outputs (CSV files) are included in the BEDR repository, allowing downstream steps to be executed without re-calling the LLM API.
+
+## Data Sources
+
+- **CTI-1002:** 1,002 CTI reports with ATT&CK annotations (801 train / 201 test)
+- **BEDR:** Boundary Entropy-Driven Resampling dataset (21,453 samples, 679 classes)
+- **TRAM:** MITRE TRAM public benchmark (multi_label.json)
+- **ATT&CK KB:** MITRE ATT&CK v15 Enterprise (attack-pattern/*.json)
 
 ## License
 
@@ -158,4 +176,4 @@ MIT License
 
 ## DOI/Archive
 
-[待添加]
+To be registered with Zenodo upon manuscript acceptance.
