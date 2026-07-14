@@ -7,6 +7,15 @@ from torch.utils.data import DataLoader
 from sentence_transformers import SentenceTransformer, InputExample, losses
 from sentence_transformers.evaluation import EmbeddingSimilarityEvaluator
 
+# ================= Reproducibility (Fixed Seeds) =================
+random.seed(42)
+np.random.seed(42)
+torch.manual_seed(42)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(42)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
 # ================= 配置区域 =================
 DATASET_PATH = "./D_BEDR.npz"
 MODEL_NAME = "BAAI/bge-base-en-v1.5"
