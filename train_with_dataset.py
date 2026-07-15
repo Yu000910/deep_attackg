@@ -17,7 +17,7 @@ if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = False
 
 # ================= Configuration =================
-DATASET_PATH = "./D_BEDR.npz"
+DATASET_PATH = "./D_BEDR.npz"  # Download from: https://github.com/Yu000910/BEDR/releases/tag/v2.0-npz-cache
 MODEL_NAME = "BAAI/bge-base-en-v1.5"
 OUTPUT_PATH = "cti_model_20k_finetuned"
 
