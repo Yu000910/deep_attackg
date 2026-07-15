@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ├── D_BEDR.npz                 (external)     # BEDR vectorized training data — from BEDR Release
 ├── test_split.json                           # CTI-1002 evaluation split
 │
-├── run_main_evaluation.py                    # Main evaluation (Table 3, Table 4)
+├── run_main_evaluation.py                    # Main evaluation + fairness (Table 3, Table 4, Table 5)
 ├── run_tram_hierarchy_eval.py                # TRAM dual-metric evaluation (Table 7)
 ├── latency_profiling.py                      # Latency profiling (Figure 8b)
 ├── learning_curve_analysis.py                # Learning curve (Figure 5)
@@ -89,6 +89,7 @@ See [API Reproducibility Notes](#api-reproducibility-notes) below for full detai
 | Paper Element | Script | Description |
 |---------------|--------|-------------|
 | Table 3 (Main Results) | `run_main_evaluation.py` → `generate_fig_performance_ablation.py` | Precision, Recall, F1 for all methods |
+| Table 4 (Data-Symmetric Comparison) | `run_main_evaluation.py` → `generate_fig_robustness.py` | ACRCNN trained on BEDR + CTI-1002 | 
 | Table 5 (Ablation Study) | `run_main_evaluation.py` → `generate_fig_performance_ablation.py` | M1/M2/M3 ablation |
 | Table 7 (TRAM External Validation) | `run_tram_hierarchy_eval.py` | Strict and Hierarchy-Aware dual metrics |
 | Figure 4 (Parameter Sensitivity) | `run_sensitivity_sweep.py` → `plot_sensitivity.py` | K1/K2 sweep + sensitivity curves |
