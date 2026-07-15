@@ -31,7 +31,7 @@ print(f"Loaded real training data: {len(records)} epochs, "
       f"head={data['head_classes']}, tail={data['tail_classes']}")
 
 # ================= 2. Plot =================
-fig, ax1 = plt.subplots(figsize=(8, 6), dpi=300)
+fig, ax1 = plt.subplots(figsize=(9, 5.5), dpi=300)
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
 
@@ -62,11 +62,11 @@ ax2.tick_params(axis='y', labelcolor='black', labelsize=12)
 
 lines_1, labels_1 = ax1.get_legend_handles_labels()
 lines_2, labels_2 = ax2.get_legend_handles_labels()
-ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='center right', fontsize=11, framealpha=0.9, edgecolor='black')
+ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='upper left', fontsize=10, framealpha=0.9, edgecolor='black')
 
 plt.title('Learning Dynamics of ACRCNN Baseline\n(Demonstrating the Representation Collapse under Long-Tailed Distribution)',
-          fontsize=15, fontweight='bold', pad=15)
-plt.tight_layout()
+          fontsize=14, fontweight='bold', pad=12)
+plt.tight_layout(pad=1.2)
 plt.savefig('learning_curve_analysis.pdf', format='pdf', bbox_inches='tight')
 plt.savefig('learning_curve_analysis.png', format='png', dpi=300, bbox_inches='tight')
 print("Chart saved: learning_curve_analysis.pdf (real data)")
