@@ -22,13 +22,13 @@ pip install -r requirements.txt
 ├── requirements.txt                          # Python dependencies
 ├── README.md                                 # This file
 │
-├── cti_model_20k_finetuned/   (symlink)      # Bi-Encoder weights (~437MB)
-├── cti_reranker_final/        (symlink)      # Cross-Encoder weights (~90MB)
-├── CTI_reports/               (symlink)      # CTI-1002 dataset (1,002 reports)
-├── TRAM/                      (symlink)      # MITRE TRAM dataset
-├── attack-pattern/            (symlink)      # MITRE ATT&CK knowledge base (v15)
+├── cti_model_20k_finetuned/   (external)     # Bi-Encoder weights (~437 MB) — see Model Weights below
+├── cti_reranker_final/        (included)     # Cross-Encoder weights (~90 MB)
+├── CTI_reports/               (included)     # CTI-1002 dataset (1,002 reports)
+├── TRAM/                      (external)     # MITRE TRAM dataset — download separately
+├── attack-pattern/            (external)     # MITRE ATT&CK knowledge base (v15) — download separately
 ├── BEDR_resampled_dataset.csv                # BEDR resampled dataset
-├── D_BEDR.npz                 (symlink)      # BEDR vectorized training data
+├── D_BEDR.npz                 (external)     # BEDR vectorized training data — from BEDR Release
 ├── test_split.json                           # CTI-1002 evaluation split
 │
 ├── run_main_evaluation.py                    # Main evaluation (Table 3, Table 4)
@@ -49,6 +49,13 @@ pip install -r requirements.txt
 ├── inspect_dataset.py                        # Dataset statistics (Figure 1)
 └── debug.py                                  # Debugging script
 ```
+
+**Items marked (external) must be obtained separately:**
+
+- `cti_model_20k_finetuned/` — download from HuggingFace (see [Model Weights](#model-weights) below)
+- `attack-pattern/` — download from [MITRE CTI](https://github.com/mitre/cti) (ATT&CK v15 Enterprise)
+- `TRAM/` — download from [MITRE TRAM](https://github.com/center-for-threat-informed-defense/tram)
+- `D_BEDR.npz` — download from [BEDR Release](https://github.com/Yu000910/BEDR/releases)
 
 ## Model Weights
 
