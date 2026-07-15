@@ -32,11 +32,11 @@ pip install -r requirements.txt
 ├── test_split.json                           # CTI-1002 evaluation split
 │
 ├── run_main_evaluation.py                    # Main evaluation (Table 3, Table 4)
-├── run_tram_hierarchy_eval.py                # TRAM dual-metric evaluation (Table 6)
-├── latency_profiling.py                      # Latency profiling (Figure 5b)
-├── learning_curve_analysis.py                # Learning curve (Figure 4)
-├── plot_sensitivity.py                       # Parameter sensitivity (Figure 6)
-├── run_case_study.py                         # Case study (Figure 7)
+├── run_tram_hierarchy_eval.py                # TRAM dual-metric evaluation (Table 7)
+├── latency_profiling.py                      # Latency profiling (Figure 8b)
+├── learning_curve_analysis.py                # Learning curve (Figure 5)
+├── plot_sensitivity.py                       # Parameter sensitivity (Figure 4)
+├── run_case_study.py                         # Case study (Figure 9)
 │
 ├── train_with_dataset.py                     # Bi-Encoder training (InfoNCE)
 ├── train_cross_encoder.py                    # Cross-Encoder training
@@ -84,14 +84,13 @@ See [API Reproducibility Notes](#api-reproducibility-notes) below for full detai
 | Table 3 (Main Results) | `run_main_evaluation.py` → `generate_fig_performance_ablation.py` | Precision, Recall, F1 for all methods |
 | Table 5 (Ablation Study) | `run_main_evaluation.py` → `generate_fig_performance_ablation.py` | M1/M2/M3 ablation |
 | Table 7 (TRAM External Validation) | `run_tram_hierarchy_eval.py` | Strict and Hierarchy-Aware dual metrics |
+| Figure 4 (Parameter Sensitivity) | `run_sensitivity_sweep.py` → `plot_sensitivity.py` | K1/K2 sweep + sensitivity curves |
+| Figure 5 (Learning Curve) | `deep_learning_train_with_logging.py` → `learning_curve_analysis.py` | ACRCNN per-epoch training log + curve plot |
 | Figure 6 (Performance + Ablation) | `generate_fig_performance_ablation.py` | Reads from `evaluation_results.json` |
 | Figure 7 (Long-Tail Robustness) | `generate_fig_robustness.py` | Reads from `fairness_results.json` |
+| Figure 8b (Latency Breakdown) | `latency_profiling.py` | Per-stage latency with mean ± std |
 | Figure 9 (Case Study) | `run_case_study.py` → `fig_case.py` | Reads from `case_study_results.json` |
-| Figure 1 (Dataset Statistics) | `inspect_dataset.py` | Class distribution statistics from BEDR CSV |
-| Figure 4 (Learning Curve) | `deep_learning_train_with_logging.py` → `learning_curve_analysis.py` | ACRCNN per-epoch training log + curve plot |
-| Figure 5b (Latency Breakdown) | `latency_profiling.py` | Per-stage latency with mean ± std |
-| Figure 6 (Parameter Sensitivity) | `run_sensitivity_sweep.py` → `plot_sensitivity.py` | K1/K2 sweep + sensitivity curves |
-| Figure 7 (Case Study) | `run_case_study.py` → `fig_case.py` | Qualitative error analysis on Reports 352 and 509 |
+| Figure 3 (Dataset Statistics) | `inspect_dataset.py` | Class distribution statistics from BEDR CSV |
 
 ### Commands
 
@@ -103,18 +102,18 @@ python run_main_evaluation.py
 # Table 7 (TRAM External Validation)
 python run_tram_hierarchy_eval.py
 
-# Figure 4 (Learning Curve)
+# Figure 5 (Learning Curve)
 python deep_learning_train_with_logging.py   # Step 1: train + log
 python learning_curve_analysis.py            # Step 2: plot
 
-# Figure 5b (Latency Breakdown)
+# Figure 8b (Latency Breakdown)
 python latency_profiling.py
 
-# Figure 6 (Parameter Sensitivity)
+# Figure 4 (Parameter Sensitivity)
 python run_sensitivity_sweep.py              # Step 1: sweep K1, K2
 python plot_sensitivity.py                   # Step 2: plot
 
-# Figure 7 (Case Study)
+# Figure 9 (Case Study)
 python run_case_study.py
 ```
 
