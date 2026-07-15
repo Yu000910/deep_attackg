@@ -1,6 +1,6 @@
 """
-ACRNN Baseline — 带逐Epoch日志记录的版本
-用于生成 learning_curve_analysis.py 所需的真实训练曲线数据
+ACRNN Baseline — with per-epoch logging for generating
+real training curve data required by learning_curve_analysis.py
 """
 import os
 import json
@@ -16,7 +16,7 @@ from sklearn.metrics import precision_recall_fscore_support
 from collections import Counter
 import numpy as np
 
-# ================= 配置 =================
+# ================= Configuration =================
 CTI_DATA_DIR = "./CTI_reports"
 BEDR_CSV_PATH = "./BEDR_resampled_dataset.csv"
 MAX_SEQ_LEN = 512
@@ -29,7 +29,7 @@ LEARNING_RATE = 1e-3
 PREDICT_THRESHOLD = 0.5
 OUTPUT_LOG = "learning_curve_real_data.json"
 
-# ================= 1. 数据加载 =================
+# ================= 1. Data Loading =================
 def load_cti_data(data_dir):
     texts, labels = [], []
     json_files = glob.glob(os.path.join(data_dir, "*.json"))
@@ -53,10 +53,10 @@ def load_bedr_data(csv_path):
                 texts.append(str(row['text']))
                 labels.append([str(row['tech_id']).strip()])
     except Exception as e:
-        print(f"加载 BEDR 数据集出错: {e}")
+        print(f"Error loading BEDR dataset: {e}")
     return texts, labels
 
-# ================= 2. 文本预处理 =================
+# ================= 2. Text Preprocessing =================
 def build_vocab(texts, max_size):
     word_counts = Counter()
     for text in texts:
@@ -84,7 +84,7 @@ class HybridDataset(Dataset):
     def __getitem__(self, idx):
         return self.sequences[idx], self.labels[idx]
 
-# ================= 3. 模型 =================
+# ================= 3. Model =================
 class CNN_LSTM_MultiLabel(nn.Module):
     def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes):
         super(CNN_LSTM_MultiLabel, self).__init__()
@@ -108,7 +108,7 @@ class CNN_LSTM_MultiLabel(nn.Module):
         logits = self.fc(combined)
         return logits
 
-# ================= 4. 验证集评估 =================
+# ================= 4. Validation Evaluation =================
 @torch.no_grad()
 def evaluate(model, data_loader, device, mlb, head_class_indices, tail_class_indices):
     model.eval()
@@ -147,31 +147,31 @@ def evaluate(model, data_loader, device, mlb, head_class_indices, tail_class_ind
     model.train()
     return float(micro_p), float(micro_r), float(micro_f1), float(head_r), float(tail_r)
 
-# ================= 5. 主程序 =================
+# ================= 5. Main Program =================
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Device: {device}")
 
-    # 加载数据
+    # Load data
     print("Loading data...")
     cti_texts, cti_labels = load_cti_data(CTI_DATA_DIR)
     bedr_texts, bedr_labels = load_bedr_data(BEDR_CSV_PATH)
     print(f"  CTI reports: {len(cti_texts)}, BEDR records: {len(bedr_texts)}")
 
-    # 统一标签
+    # Unify labels
     all_labels = cti_labels + bedr_labels
     mlb = MultiLabelBinarizer()
     mlb.fit(all_labels)
     num_classes = len(mlb.classes_)
     print(f"  Label space: {num_classes} classes")
 
-    # 三层分割: CTI → train(64%) / val(16%) / test(20%)
+    # Three-way split: CTI -> train(64%) / val(16%) / test(20%)
     X_cti_trainval, X_cti_test, y_cti_trainval, y_cti_test = train_test_split(
         cti_texts, cti_labels, test_size=0.2, random_state=42)
     X_cti_train, X_cti_val, y_cti_train, y_cti_val = train_test_split(
         X_cti_trainval, y_cti_trainval, test_size=0.2, random_state=42)
 
-    # 训练集 = CTI train + BEDR
+    # Training set = CTI train + BEDR
     train_texts = X_cti_train + bedr_texts
     train_labels = y_cti_train + bedr_labels
     val_texts, val_labels = X_cti_val, y_cti_val
@@ -179,7 +179,7 @@ def main():
 
     print(f"  Train: {len(train_texts)}, Val: {len(val_texts)}, Test: {len(test_texts)}")
 
-    # 计算 Head/Tail 划分 (基于训练集中各类别的样本数)
+    # Compute Head/Tail split (per-class sample counts in training set)
     train_bin = mlb.transform(train_labels)
     class_sample_counts = train_bin.sum(axis=0)
     median_count = np.median(class_sample_counts[class_sample_counts > 0])
@@ -187,7 +187,7 @@ def main():
     tail_indices = [i for i, c in enumerate(class_sample_counts) if 0 < c < median_count]
     print(f"  Head classes: {len(head_indices)}, Tail classes: {len(tail_indices)} (median={median_count:.0f})")
 
-    # 词表
+    # Vocabulary
     vocab = build_vocab(train_texts, MAX_VOCAB_SIZE)
     vocab_size = len(vocab)
 
@@ -207,12 +207,12 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    # 模型
+    # Model
     model = CNN_LSTM_MultiLabel(vocab_size, EMBEDDING_DIM, HIDDEN_DIM, num_classes).to(device)
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-    # ===== 训练 + 逐Epoch日志 =====
+    # ===== Training + Per-Epoch Logging =====
     log_records = []
     print("\nTraining...")
     for epoch in range(EPOCHS):
@@ -244,14 +244,14 @@ def main():
         print(f"  Epoch {epoch+1:2d}/{EPOCHS} | Loss={avg_loss:.4f} | "
               f"Global-R={val_r:.4f} | Head-R={head_r:.4f} | Tail-R={tail_r:.4f}")
 
-    # 保存日志
+    # Save log
     with open(OUTPUT_LOG, 'w') as f:
         json.dump({"epochs": EPOCHS, "head_classes": len(head_indices),
                     "tail_classes": len(tail_indices), "median_count": float(median_count),
                     "records": log_records}, f, indent=2)
     print(f"\nTraining log saved to {OUTPUT_LOG}")
 
-    # 最终测试
+    # Final test
     print("\n=== Final Test Evaluation ===")
     model.eval()
     all_preds, all_targets = [], []
