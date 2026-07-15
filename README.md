@@ -46,7 +46,7 @@ pip install -r requirements.txt
 ├── run_sensitivity_sweep.py                  # Sensitivity parameter sweep
 ├── fig_case.py                               # Case study visualization helper
 ├── utils_kb_filter.py                        # Knowledge base filter utility
-├── inspect_dataset.py                        # Dataset statistics (Figure 1)
+├── inspect_dataset.py                        # Dataset statistics (Figure 3)
 └── debug.py                                  # Debugging script
 ```
 
