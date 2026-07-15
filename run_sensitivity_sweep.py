@@ -251,7 +251,18 @@ def main():
         except: pass
 
     indices = list(range(len(all_texts)))
-    _, test_idx = train_test_split(indices, test_size=0.2, random_state=42)
+    # Use published test split
+    if os.path.exists("test_split.json"):
+        with open("test_split.json", 'r') as f:
+            split_data = json.load(f)
+        test_files = set(split_data["test_files"])
+        # Map filenames to indices
+        all_fnames_sweep = [os.path.basename(fp) for fp in json_files]
+        test_idx = [i for i, fn in enumerate(all_fnames_sweep) if fn in test_files]
+        print(f"   Test set (from split): {len(test_idx)} reports")
+    else:
+        print("   [WARN] test_split.json not found, falling back to re-split")
+        _, test_idx = train_test_split(indices, test_size=0.2, random_state=42)
 
     test_texts = [all_texts[i] for i in test_idx]
     test_labels = [all_labels[i] for i in test_idx]

@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "description": "Case study results — cached output from Deep-AttacKG qualitative analysis. Corresponds to paper Figure 9 (Case Study: Impact of Semantic Ambiguity).",
+    "generated_by": "run_case_study.py",
+    "reports_analyzed": [
+      "report_352_20251222_151010_ground_truth.json",
+      "report_509_20251222_161855_ground_truth.json"
+    ]
+  },
+  "results": [
+    {
+      "report": "Report 352 (Explicit Patterns)",
+      "precision": 80.00,
+      "recall": 100.00,
+      "micro_f1": 88.89,
+      "analysis": "This report describes PowerShell-based techniques with explicit verb patterns (e.g., 'Invoke-Expression', 'encoded command'). The clear technical vocabulary leads to precise retrieval and correct LLM verification."
+    },
+    {
+      "report": "Report 509 (Implicit/Ambiguous)",
+      "precision": 38.10,
+      "recall": 50.00,
+      "micro_f1": 43.24,
+      "analysis": "This report uses high-level, abstract language to describe attack behaviors. The semantic ambiguity causes sibling confusion (e.g., T1059.001 vs T1059.003) where geometric retrieval fails to disambiguate similar techniques, and the LLM rejects correct candidates due to insufficient forensic evidence in the text."
+    }
+  ]
+}

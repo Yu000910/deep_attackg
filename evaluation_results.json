@@ -1,0 +1,157 @@
+{
+  "metadata": {
+    "description": "Deep-AttacKG evaluation results — cached output from experimental runs (December 2025 – April 2026). These correspond to the numbers reported in the manuscript Tables 3 and 5.",
+    "dataset": "CTI-1002 test split (N=201)",
+    "kb_techniques": 679,
+    "random_seed": 42,
+    "api_model": "deepseek-chat (DeepSeek-V3)",
+    "api_temperature": 0.0,
+    "generated_by": "run_main_evaluation.py",
+    "note": "Baseline method results (Tier 1, Tier 2, Tier 3) are sourced from prior published work and controlled re-implementation. Deep-AttacKG and ablation results are from our own experimental runs."
+  },
+  "main_results": {
+    "methods": [
+      {
+        "name": "TF-IDF + SVM",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.185,
+        "recall": 0.132,
+        "micro_f1": 0.154
+      },
+      {
+        "name": "TTPDrill",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.212,
+        "recall": 0.145,
+        "micro_f1": 0.168
+      },
+      {
+        "name": "AttacKG",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.235,
+        "recall": 0.152,
+        "micro_f1": 0.179
+      },
+      {
+        "name": "ATHRNN",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.224,
+        "recall": 0.158,
+        "micro_f1": 0.185
+      },
+      {
+        "name": "HM-ACNN",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.268,
+        "recall": 0.172,
+        "micro_f1": 0.209
+      },
+      {
+        "name": "FT-SecureBERT",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.312,
+        "recall": 0.184,
+        "micro_f1": 0.231
+      },
+      {
+        "name": "ACRCNN",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.342,
+        "recall": 0.195,
+        "micro_f1": 0.248
+      },
+      {
+        "name": "FT-LLaMA-3-8B (LoRA)",
+        "tier": "Tier 1: Supervised Baselines",
+        "target_training": true,
+        "precision": 0.245,
+        "recall": 0.191,
+        "micro_f1": 0.215
+      },
+      {
+        "name": "DeepSeek-V3.2 (Vanilla)",
+        "tier": "Tier 2: Zero-Shot Generative Baselines",
+        "target_training": false,
+        "precision": 0.115,
+        "recall": 0.154,
+        "micro_f1": 0.132
+      },
+      {
+        "name": "AttacKG+ (Hierarchical)",
+        "tier": "Tier 2: Zero-Shot Generative Baselines",
+        "target_training": false,
+        "precision": 0.205,
+        "recall": 0.168,
+        "micro_f1": 0.185
+      },
+      {
+        "name": "Naive RAG (Cosine)",
+        "tier": "Tier 3: Naive Retrieval Baseline",
+        "target_training": false,
+        "precision": 0.452,
+        "recall": 0.548,
+        "micro_f1": 0.495
+      },
+      {
+        "name": "Deep-AttacKG (Protocol B)",
+        "tier": "Ours: Deep-AttacKG Framework",
+        "target_training": false,
+        "precision": 0.513,
+        "recall": 0.763,
+        "micro_f1": 0.613
+      },
+      {
+        "name": "Deep-AttacKG (Protocol C)",
+        "tier": "Ours: Deep-AttacKG Framework",
+        "target_training": false,
+        "precision": 0.508,
+        "recall": 0.759,
+        "micro_f1": 0.609
+      }
+    ]
+  },
+  "ablation": [
+    {
+      "stage": "M1: Hybrid Retrieval Only",
+      "precision": 0.1540,
+      "recall": 0.8950,
+      "micro_f1": 0.2620,
+      "primary_gain": "Coverage (Recall)"
+    },
+    {
+      "stage": "M2: + Cross-Encoder Reranking",
+      "precision": 0.3560,
+      "recall": 0.8210,
+      "micro_f1": 0.4960,
+      "primary_gain": "Denoising (Precision)"
+    },
+    {
+      "stage": "M3: + Logic Reasoning",
+      "precision": 0.5125,
+      "recall": 0.7632,
+      "micro_f1": 0.6132,
+      "primary_gain": "Disambiguation (F1)"
+    }
+  ],
+  "llm_ablation": [
+    {
+      "configuration": "GPT-4o-mini (Standalone Baseline)",
+      "precision": 0.1650,
+      "recall": 0.3470,
+      "micro_f1": 0.2240
+    },
+    {
+      "configuration": "Deep-AttacKG (w/ GPT-4o-mini as M3)",
+      "precision": 0.4820,
+      "recall": 0.7330,
+      "micro_f1": 0.5815
+    }
+  ]
+}

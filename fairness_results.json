@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "description": "Long-tail robustness (fairness) results — cached output from Deep-AttacKG evaluation. Corresponds to paper Figure 7 and Section 4.3.3 (RQ3: Robustness Analysis).",
+    "group_definitions": {
+      "Head": ">50 training samples",
+      "Middle": "5–50 training samples",
+      "Tail": "<5 training samples"
+    },
+    "generated_by": "run_main_evaluation.py (--compute-fairness)",
+    "note": "Techniques are stratified into three frequency groups based on their occurrence in the BEDR training set."
+  },
+  "groups": ["Head", "Middle", "Tail"],
+  "results": {
+    "Deep-AttacKG (Ours)": {
+      "Head": 0.586,
+      "Middle": 0.534,
+      "Tail": 0.512
+    },
+    "FT-LLaMA-3-8B (Generative)": {
+      "Head": 0.425,
+      "Middle": 0.218,
+      "Tail": 0.082
+    },
+    "ACRCNN (Supervised)": {
+      "Head": 0.312,
+      "Middle": 0.215,
+      "Tail": 0.058
+    }
+  }
+}

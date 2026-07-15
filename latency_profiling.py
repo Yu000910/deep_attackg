@@ -83,10 +83,11 @@ def load_and_sample_tram_data(filepath, sample_size):
     sampled = random.sample(valid_reports, min(sample_size, len(valid_reports)))
     return sampled
 
-def load_and_sample_cti_data(reports_dir, sample_size):
-    """加载CTI报告用于延迟剖析"""
+def load_and_sample_cti_data(reports_dir, sample_size, split_path="test_split.json"):
+    """Load CTI reports for latency profiling using the published test split."""
     json_files = sorted(glob.glob(os.path.join(reports_dir, "*_ground_truth.json")))
     reports = []
+    all_fnames = []
     for fpath in json_files:
         try:
             with open(fpath, 'r', encoding='utf-8') as f:
@@ -94,13 +95,24 @@ def load_and_sample_cti_data(reports_dir, sample_size):
             text = data.get('clean_text', '')
             if text and len(text) > 50:
                 reports.append({"title": os.path.basename(fpath), "text": text})
+                all_fnames.append(os.path.basename(fpath))
         except:
             pass
-    # Use same test split as main evaluation
-    from sklearn.model_selection import train_test_split
-    indices = list(range(len(reports)))
-    _, test_idx = train_test_split(indices, test_size=0.2, random_state=42)
-    test_reports = [reports[i] for i in test_idx]
+
+    # Use published test split
+    if os.path.exists(split_path):
+        with open(split_path, 'r') as f:
+            split_data = json.load(f)
+        test_files = set(split_data["test_files"])
+        test_reports = [r for r, fn in zip(reports, all_fnames) if fn in test_files]
+        print(f"   Test reports (from split): {len(test_reports)}")
+    else:
+        print(f"   [WARN] {split_path} not found, falling back to re-split")
+        from sklearn.model_selection import train_test_split
+        indices = list(range(len(reports)))
+        _, test_idx = train_test_split(indices, test_size=0.2, random_state=42)
+        test_reports = [reports[i] for i in test_idx]
+
     import random as rnd
     rnd.seed(42)
     return rnd.sample(test_reports, min(sample_size, len(test_reports)))

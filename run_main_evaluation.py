@@ -6,15 +6,18 @@ Protocol B: Zero-Shot evaluation on 201 test reports
 Key fixes:
 - Uses strict exact-match Micro-F1 (standard definition)
 - Properly reads published test_split.json
+- Saves structured results to evaluation_results.json
+- Computes 95% bootstrap confidence intervals
 - Fixed random seeds for reproducibility
 
-Usage: python run_main_evaluation.py
+Usage: python run_main_evaluation.py [--quick] [--compute-fairness]
 """
 import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 import json
 import glob
+import time
 import torch
 import numpy as np
 from tqdm import tqdm
@@ -207,6 +210,98 @@ def compute_strict_micro_f1(all_preds, all_trues):
     return micro_p, micro_r, micro_f1, global_tp, global_fp, global_fn
 
 
+def bootstrap_ci(all_preds, all_trues, n_bootstrap=1000, alpha=0.05):
+    """Compute 95% bootstrap confidence intervals for Micro-F1.
+    Resamples (report, prediction, truth) triples with replacement.
+    """
+    n = len(all_preds)
+    f1_samples = []
+    rng = np.random.RandomState(42)
+    for _ in range(n_bootstrap):
+        idx = rng.choice(n, size=n, replace=True)
+        bs_preds = [all_preds[i] for i in idx]
+        bs_trues = [all_trues[i] for i in idx]
+        _, _, f1, _, _, _ = compute_strict_micro_f1(bs_preds, bs_trues)
+        f1_samples.append(f1)
+    f1_samples = np.sort(f1_samples)
+    lower = f1_samples[int(alpha / 2 * n_bootstrap)]
+    upper = f1_samples[int((1 - alpha / 2) * n_bootstrap)]
+    mean = np.mean(f1_samples)
+    return float(lower), float(upper), float(mean)
+
+
+def save_results(m1_p, m1_r, m1_f1, m1_tp, m1_fp, m1_fn,
+                 m2_p, m2_r, m2_f1, m2_tp, m2_fp, m2_fn,
+                 m3_p, m3_r, m3_f1, m3_tp, m3_fp, m3_fn,
+                 m3_preds, m3_trues,
+                 test_idx, kb_count, output_path="evaluation_results.json"):
+    """Save ablation results to structured JSON, preserving baseline data if present."""
+
+    # Load existing cached file to preserve baseline results (if any)
+    existing = {}
+    if os.path.exists(output_path):
+        with open(output_path, 'r') as f:
+            existing = json.load(f)
+
+    # Compute bootstrap CI for M3
+    ci_lower, ci_upper, ci_mean = bootstrap_ci(m3_preds, m3_trues)
+
+    results = {
+        "metadata": existing.get("metadata", {
+            "description": "Deep-AttacKG evaluation results",
+            "dataset": "CTI-1002 test split (N=201)",
+            "kb_techniques": kb_count,
+            "random_seed": 42,
+            "generated_by": "run_main_evaluation.py"
+        }),
+        "main_results": existing.get("main_results", {}),
+        "ablation": [
+            {
+                "stage": "M1: Hybrid Retrieval Only",
+                "precision": round(float(m1_p), 6),
+                "recall": round(float(m1_r), 6),
+                "micro_f1": round(float(m1_f1), 6),
+                "tp": int(m1_tp), "fp": int(m1_fp), "fn": int(m1_fn),
+                "primary_gain": "Coverage (Recall)"
+            },
+            {
+                "stage": "M2: + Cross-Encoder Reranking",
+                "precision": round(float(m2_p), 6),
+                "recall": round(float(m2_r), 6),
+                "micro_f1": round(float(m2_f1), 6),
+                "tp": int(m2_tp), "fp": int(m2_fp), "fn": int(m2_fn),
+                "primary_gain": "Denoising (Precision)"
+            },
+            {
+                "stage": "M3: + Logic Reasoning",
+                "precision": round(float(m3_p), 6),
+                "recall": round(float(m3_r), 6),
+                "micro_f1": round(float(m3_f1), 6),
+                "tp": int(m3_tp), "fp": int(m3_fp), "fn": int(m3_fn),
+                "primary_gain": "Disambiguation (F1)",
+                "bootstrap_ci_95": [ci_lower, ci_upper],
+                "bootstrap_ci_mean": ci_mean
+            }
+        ],
+        "bootstrap": {
+            "n_iterations": 1000,
+            "confidence_level": 0.95,
+            "m3_f1_ci_lower": ci_lower,
+            "m3_f1_ci_upper": ci_upper
+        },
+        "test_samples": len(test_idx),
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+    # Preserve LLM ablation from existing cache
+    if "llm_ablation" in existing:
+        results["llm_ablation"] = existing["llm_ablation"]
+
+    with open(output_path, 'w') as f:
+        json.dump(results, f, indent=2)
+    print(f"\nResults saved to {output_path}")
+
+
 # ================= 6. Main =================
 def main():
     bi_enc, cross_enc, kb_embs, bm25, kb_ids, kb_texts, kb_info = load_system()
@@ -320,6 +415,13 @@ def main():
     print(f"{'M2: + Cross-Encoder':<25} {m2_p*100:>9.2f}% {m2_r*100:>9.2f}% {m2_f1*100:>9.2f}%")
     print(f"{'M3: + LLM Reasoning':<25} {m3_p*100:>9.2f}% {m3_r*100:>9.2f}% {m3_f1*100:>9.2f}%")
     print("="*60)
+
+    # Save structured results
+    save_results(m1_p, m1_r, m1_f1, m1_tp, m1_fp, m1_fn,
+                 m2_p, m2_r, m2_f1, m2_tp, m2_fp, m2_fn,
+                 m3_p, m3_r, m3_f1, m3_tp, m3_fp, m3_fn,
+                 m3_preds, m3_trues,
+                 test_idx, len(kb_texts))
 
 
 if __name__ == "__main__":

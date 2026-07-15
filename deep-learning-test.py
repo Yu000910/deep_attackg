@@ -25,12 +25,13 @@ LEARNING_RATE = 1e-3                            # 学习率
 PREDICT_THRESHOLD = 0.5                         # 多标签分类阈值
 
 # ================= 1. 数据加载与融合 =================
-def load_cti_data(data_dir):
-    """加载 CTI JSON 报告，返回文本和多标签列表"""
+def load_cti_data(data_dir, return_fnames=False):
+    """Load CTI JSON reports and return texts with multi-hot labels."""
     texts = []
     labels = []
-    json_files = glob.glob(os.path.join(data_dir, "*.json"))
-    
+    fnames = []
+    json_files = sorted(glob.glob(os.path.join(data_dir, "*.json")))
+
     for file_path in json_files:
         with open(file_path, 'r', encoding='utf-8') as f:
             try:
@@ -38,9 +39,12 @@ def load_cti_data(data_dir):
                 if "clean_text" in data and "actual_found_ids" in data:
                     texts.append(data["clean_text"])
                     labels.append(data["actual_found_ids"])
+                    fnames.append(os.path.basename(file_path))
             except Exception as e:
                 print(f"解析 {file_path} 时出错: {e}")
-                
+
+    if return_fnames:
+        return texts, labels, fnames
     return texts, labels
 
 def load_bedr_data(csv_path):
@@ -140,9 +144,9 @@ def run_experiment():
 
     # 1. 加载 CTI 和 BEDR 数据
     print("📂 正在加载数据...")
-    cti_texts, cti_labels = load_cti_data(CTI_DATA_DIR)
+    cti_texts, cti_labels, cti_fnames = load_cti_data(CTI_DATA_DIR, return_fnames=True)
     bedr_texts, bedr_labels = load_bedr_data(BEDR_CSV_PATH)
-    
+
     print(f"   - 成功加载 {len(cti_texts)} 篇 CTI 报告")
     print(f"   - 成功加载 {len(bedr_texts)} 条 BEDR 记录")
 
@@ -153,20 +157,33 @@ def run_experiment():
     num_classes = len(mlb.classes_)
     print(f"🎯 统一标签空间: 共 {num_classes} 种独特的 ATT&CK 技术")
 
-    # 3. 严格的数据集划分逻辑
-    # 仅将 CTI 数据拆分为 80% 训练集 和 20% 测试集
-    X_cti_train, X_cti_test, y_cti_train, y_cti_test = train_test_split(
-        cti_texts, cti_labels, test_size=0.2, random_state=42
-    )
-    
+    # 3. Use published test split for consistent evaluation
+    split_path = "test_split.json"
+    if os.path.exists(split_path):
+        with open(split_path, 'r') as f:
+            split_data = json.load(f)
+        test_files = set(split_data["test_files"])
+        train_idx = [i for i, fn in enumerate(cti_fnames) if fn not in test_files]
+        test_idx  = [i for i, fn in enumerate(cti_fnames) if fn in test_files]
+        print(f"   Using published split: {len(train_idx)} train / {len(test_idx)} test")
+    else:
+        print(f"   [WARN] {split_path} not found, falling back to re-split")
+        indices = list(range(len(cti_texts)))
+        train_idx, test_idx = train_test_split(indices, test_size=0.2, random_state=42)
+
+    X_cti_train = [cti_texts[i] for i in train_idx]
+    y_cti_train = [cti_labels[i] for i in train_idx]
+    X_cti_test  = [cti_texts[i] for i in test_idx]
+    y_cti_test  = [cti_labels[i] for i in test_idx]
+
     # 训练集 = 80% 的 CTI + 100% 的 BEDR
     train_texts = X_cti_train + bedr_texts
     train_labels = y_cti_train + bedr_labels
-    
+
     # 测试集 = 20% 的 CTI (完全隔离真实领域测试)
     test_texts = X_cti_test
     test_labels = y_cti_test
-    
+
     print(f"📊 训练集大小: {len(train_texts)} (CTI 80% + BEDR 100%)")
     print(f"📊 测试集大小: {len(test_texts)} (仅 CTI 20%)")
 

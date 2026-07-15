@@ -149,7 +149,42 @@ def check_match(pred, truth):
     return False
 
 # ================= 4. 详细诊断打印 (核心) =================
-def print_case_diagnosis(name, preds, true_ids, kb_info):
+def get_case_metrics(preds, true_ids):
+    """Compute P/R/F1 with hierarchy-aware matching for case study diagnosis."""
+    pred_list = list(preds)
+    true_list = list(true_ids)
+
+    tp_set = set()
+    covered_truths = set()
+
+    for p in pred_list:
+        matched = False
+        for t in true_list:
+            if check_match(p, t):
+                tp_set.add(p)
+                covered_truths.add(t)
+                matched = True
+                break
+
+    p_val = len(tp_set)/len(pred_list) if pred_list else 0.0
+    r_val = len(covered_truths)/len(true_list) if true_list else 0.0
+    f1_val = 2*p_val*r_val/(p_val+r_val) if (p_val+r_val)>0 else 0.0
+    return p_val, r_val, f1_val
+
+def save_case_study_results(all_case_data, output_path="case_study_results.json"):
+    """Save case study results to structured JSON."""
+    import time
+    results = {
+        "metadata": {
+            "description": "Case study results — cached output from Deep-AttacKG qualitative analysis",
+            "generated_by": "run_case_study.py",
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        },
+        "results": all_case_data
+    }
+    with open(output_path, 'w') as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+    print(f"\nCase study results saved to {output_path}")
     pred_list = list(preds)
     true_list = list(true_ids)
     
@@ -225,32 +260,46 @@ def run_case_study():
     bi_enc, cross_enc, kb_embs, bm25, kb_ids, kb_texts, kb_info = load_system()
     
     print(f"\n>>> 🚀 开始对 {len(TARGET_REPORTS)} 篇目标报告进行深度诊断...\n")
-    
+
+    all_case_data = []
+
     for target_name in TARGET_REPORTS:
         r_path = os.path.join(REPORTS_DIR, target_name)
         if not os.path.exists(r_path):
             print(f"⚠️ 跳过: 找不到文件 {target_name}")
             continue
-            
+
         with open(r_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         text = data.get('clean_text', '')
         true_ids = set(data.get('actual_found_ids', []))
-        
-        if not text: 
+
+        if not text:
             print(f"⚠️ 跳过: {target_name} 没有文本内容")
             continue
-        
+
         windows = get_sliding_windows(text)
         all_preds = set()
-        
+
         # 逐个窗口扫描
         for w in tqdm(windows, desc=f"Scanning {target_name}", leave=False):
             ids = analyze_chunk_advanced(w, bi_enc, cross_enc, kb_embs, bm25, kb_ids, kb_texts, kb_info)
             all_preds.update(ids)
-            
+
+        # 计算指标并打印诊断
+        p_val, r_val, f1_val = get_case_metrics(all_preds, true_ids)
+        all_case_data.append({
+            "report": target_name,
+            "precision": round(p_val * 100, 2),
+            "recall": round(r_val * 100, 2),
+            "micro_f1": round(f1_val * 100, 2)
+        })
+
         # 打印详细诊断
         print_case_diagnosis(target_name, all_preds, true_ids, kb_info)
+
+    # Save structured results
+    save_case_study_results(all_case_data)
 
 if __name__ == "__main__":
     run_case_study()

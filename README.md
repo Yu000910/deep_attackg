@@ -4,6 +4,8 @@
 
 ASOC-D-26-00148R1 | Applied Soft Computing
 
+**Release:** v2.0 | **Commit:** `ffb5283`
+
 ---
 
 ## Environment Setup
@@ -79,10 +81,12 @@ See [API Reproducibility Notes](#api-reproducibility-notes) below for full detai
 
 | Paper Element | Script | Description |
 |---------------|--------|-------------|
-| Table 3 (Main Results) | `run_main_evaluation.py` | M1/M2/M3 Precision, Recall, F1, TP, FP, FN |
-| Table 4 (Ablation Study) | `run_main_evaluation.py` | Ablation variants |
-| Table 5 (BEDR Augmentation) | `run_main_evaluation.py` | ACRCNN$_{aug}$ comparison |
-| Table 6 (TRAM External Validation) | `run_tram_hierarchy_eval.py` | Strict and Hierarchy-Aware dual metrics |
+| Table 3 (Main Results) | `run_main_evaluation.py` → `generate_fig_performance_ablation.py` | Precision, Recall, F1 for all methods |
+| Table 5 (Ablation Study) | `run_main_evaluation.py` → `generate_fig_performance_ablation.py` | M1/M2/M3 ablation |
+| Table 7 (TRAM External Validation) | `run_tram_hierarchy_eval.py` | Strict and Hierarchy-Aware dual metrics |
+| Figure 6 (Performance + Ablation) | `generate_fig_performance_ablation.py` | Reads from `evaluation_results.json` |
+| Figure 7 (Long-Tail Robustness) | `generate_fig_robustness.py` | Reads from `fairness_results.json` |
+| Figure 9 (Case Study) | `run_case_study.py` → `fig_case.py` | Reads from `case_study_results.json` |
 | Figure 1 (Dataset Statistics) | `inspect_dataset.py` | Class distribution statistics from BEDR CSV |
 | Figure 4 (Learning Curve) | `deep_learning_train_with_logging.py` → `learning_curve_analysis.py` | ACRCNN per-epoch training log + curve plot |
 | Figure 5b (Latency Breakdown) | `latency_profiling.py` | Per-stage latency with mean ± std |
@@ -92,11 +96,11 @@ See [API Reproducibility Notes](#api-reproducibility-notes) below for full detai
 ### Commands
 
 ```bash
-# Table 3 & Table 4 (Main Results & Ablation)
+# Table 3 & Table 5 (Main Results & Ablation)
 python run_main_evaluation.py
 # Set QUICK_TEST=True for a fast 5-report sanity check
 
-# Table 6 (TRAM External Validation)
+# Table 7 (TRAM External Validation)
 python run_tram_hierarchy_eval.py
 
 # Figure 4 (Learning Curve)
