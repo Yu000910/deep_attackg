@@ -51,7 +51,7 @@ ax1.axvline(x=50, color='gray', linestyle=':', linewidth=1.5)
 k1_idx = k1_values.index(50) if 50 in k1_values else 4
 ax1.annotate('Empirical Saturation\n($K_1=50$)',
              xy=(50, recall_k1[k1_idx]),
-             xytext=(55, recall_k1[k1_idx] - 5),
+             xytext=(59, recall_k1[k1_idx] - 3),
              arrowprops=dict(facecolor='black', shrink=0.05, width=1.5, headwidth=6),
              fontsize=10, fontweight='bold')
 
@@ -78,7 +78,7 @@ ax2.axvline(x=10, color='gray', linestyle=':', linewidth=1.5)
 k2_idx = k2_values.index(10) if 10 in k2_values else 3
 ax2.annotate('Selected Trade-off\n($K_2=10$)',
              xy=(10, precision_k2[k2_idx]),
-             xytext=(12, precision_k2[k2_idx] - 5),
+             xytext=(13, precision_k2[k2_idx] - 1.5),
              arrowprops=dict(facecolor='black', shrink=0.05, width=1.5, headwidth=6),
              fontsize=10, fontweight='bold')
 
