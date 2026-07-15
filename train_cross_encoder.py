@@ -21,8 +21,7 @@ if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = False
 
 # ================= Configuration =================
-user_home = os.path.expanduser("~")
-OUTPUT_PATH = os.path.join(user_home, "Desktop", "cti_reranker_final")
+OUTPUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cti_reranker_final")
 
 DATASET_PATH = "./D_BEDR.npz"
 MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
