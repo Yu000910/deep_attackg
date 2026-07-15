@@ -4,7 +4,7 @@
 
 ASOC-D-26-00148R1 | Applied Soft Computing
 
-**Release:** v2.0 | **Commit:** `ffb5283`
+**Release:** v2.0 | **Commit:** `0f1374c`
 
 ---
 
