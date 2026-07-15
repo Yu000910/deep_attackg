@@ -48,17 +48,17 @@ ax.set_xticks(x)
 ax.set_xticklabels(groups, fontsize=11)
 ax.set_title('Long-Tail Robustness Across Frequency Groups', fontsize=14, fontweight='bold')
 ax.legend(loc='upper left', fontsize=10, framealpha=0.9, edgecolor='black')
-ax.set_ylim(0, 0.78)
+ax.set_ylim(0, 0.85)
 ax.grid(axis='y', linestyle='--', alpha=0.4)
 
 ax.annotate('Generative\nPerformance Cliff',
-            xy=(2, 0.082), xytext=(1.3, 0.18),
+            xy=(2, 0.082), xytext=(0.2, 0.32),
             arrowprops=dict(facecolor='#B22222', shrink=0.05, width=1.5, headwidth=8),
             fontsize=10, color='#B22222', fontweight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
 
 ax.annotate('Stable Geometric Priors\n(F1 > 0.50 even on tail)',
-            xy=(2 - width, 0.512), xytext=(0.95, 0.68),
+            xy=(2 - width, 0.512), xytext=(0.2, 0.78),
             arrowprops=dict(facecolor='#228B22', shrink=0.05, width=1.5, headwidth=8),
             fontsize=10, color='#228B22', fontweight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
