@@ -2,7 +2,7 @@
 TRAM Evaluation Script — Strict-F1 and Hierarchy-Aware-F1 with proper one-to-one matching.
 
 Key fixes:
-- Uses maximum bipartite matching for hierarchy-aware evaluation
+- Uses greedy one-to-one matching for hierarchy-aware evaluation
   to prevent multiple predictions from matching the same ground truth
 - Fixed random seeds
 
